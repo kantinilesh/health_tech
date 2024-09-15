@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nivaran - Your Health Companion</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body class="bg-light dark:bg-dark text-gray-800 dark:text-white transition-colors duration-300">
+    <nav class="bg-light dark:bg-dark p-4 fixed w-full z-50 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-3xl font-bold">Nivaran</a>
+            <div class="flex items-center space-x-6">
+                <ul class="flex space-x-6">
+                    <li><a href="#home" class="hover:text-gray-600 dark:hover:text-gray-300 transition duration-300">Home</a></li>
+                    <li><a href="#diseases" class="hover:text-gray-600 dark:hover:text-gray-300 transition duration-300">Diseases</a></li>
+                    <li><a href="#pharmacy" class="hover:text-gray-600 dark:hover:text-gray-300 transition duration-300">Nearby Pharmacy</a></li>
+                </ul>
+                <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-16">
+        <section id="home" class="min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <h1 class="text-6xl font-bold mb-4">Welcome to Nivaran</h1>
+                <p class="text-xl mb-8">Your trusted health companion</p>
+                <a href="#diseases" class="bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition duration-300">Explore Diseases</a>
+            </div>
+        </section>
+
+        <section id="diseases" class="py-20">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12">Common Diseases</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="disease-card" data-disease="brain-tumor">
+                        <h3 class="text-2xl font-semibold mb-4">Brain Tumor</h3>
+                        <p class="mb-4">Learn about the symptoms and treatment of brain tumors.</p>
+                        <a href="disease.html?disease=brain-tumor" class="text-blue-600 dark:text-blue-400 hover:underline">Read more →</a>
+                    </div>
+                    <div class="disease-card" data-disease="cancer">
+                        <h3 class="text-2xl font-semibold mb-4">Cancer</h3>
+                        <p class="mb-4">Understand various types of cancer, their symptoms, and treatments.</p>
+                        <a href="disease.html?disease=cancer" class="text-blue-600 dark:text-blue-400 hover:underline">Read more →</a>
+                    </div>
+                    <div class="disease-card" data-disease="jaundice">
+                        <h3 class="text-2xl font-semibold mb-4">Jaundice</h3>
+                        <p class="mb-4">Discover the symptoms and treatment options for jaundice.</p>
+                        <a href="disease.html?disease=jaundice" class="text-blue-600 dark:text-blue-400 hover:underline">Read more →</a>
+                    </div>
+                    <div class="disease-card" data-disease="typhoid">
+                        <h3 class="text-2xl font-semibold mb-4">Typhoid</h3>
+                        <p class="mb-4">Learn about the causes, symptoms, and treatment of typhoid fever.</p>
+                        <a href="disease.html?disease=typhoid" class="text-blue-600 dark:text-blue-400 hover:underline">Read more →</a>
+                    </div>
+                    <div class="disease-card" data-disease="diabetes">
+                        <h3 class="text-2xl font-semibold mb-4">Diabetes</h3>
+                        <p class="mb-4">Understand the causes and management of diabetes.</p>
+                        <a href="disease.html?disease=diabetes" class="text-blue-600 dark:text-blue-400 hover:underline">Read more →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pharmacy" class="py-20">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12">Find Nearby Pharmacies</h2>
+                <div class="max-w-md mx-auto mb-8">
+                    <label for="pincode" class="block text-lg font-semibold mb-2">Enter PIN Code:</label>
+                    <div class="flex">
+                        <input type="text" id="pincode" placeholder="Enter 6-digit PIN code" class="flex-grow p-2 border rounded-l text-gray-800" maxlength="6">
+                        <button id="searchPharmacy" class="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700 transition duration-300">Search</button>
+                    </div>
+                </div>
+                <div id="map" class="h-96 w-full rounded-lg shadow-lg"></div>
+            </div>
+        </section>
+  
+        
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2023 Nivaran. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
