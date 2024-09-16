@@ -9,11 +9,22 @@ gsap.from("nav", {
     ease: "power3.out"
 });
 
+// Welcome text animation
+const welcomeText = document.querySelectorAll('#welcomeText span');
+gsap.to(welcomeText, {
+    y: 0,
+    opacity: 1,
+    duration: 2,
+    stagger: 0.5,
+    ease: "bounce.out"
+});
+
 // Home section animation
-gsap.from("#home h1, #home p, #home a", {
+gsap.from("#home p, #home a", {
     opacity: 0,
     y: 50,
-    duration: 1,
+    duration: 2,
+    delay: 1,
     stagger: 0.2,
     ease: "power3.out"
 });
@@ -48,8 +59,8 @@ const diseases = [
 ];
 
 // Populate disease cards
-const diseaseContainer = document.querySelector("#diseases .grid");
-diseases.forEach(disease => {
+const diseaseContainer = document.getElementById("diseaseCards");
+diseases.forEach((disease, index) => {
     const card = document.createElement("div");
     card.className = "disease-card";
     card.innerHTML = `
@@ -58,20 +69,19 @@ diseases.forEach(disease => {
         <a href="${disease.link}" class="text-blue-600 dark:text-blue-400 hover:underline">Read more →</a>
     `;
     diseaseContainer.appendChild(card);
-});
 
-// Diseases section animation
-gsap.from(".disease-card", {
-    opacity: 0,
-    y: 50,
-    duration: 0.8,
-    stagger: 0.1,
-    scrollTrigger: {
-        trigger: "#diseases",
-        start: "top 80%",
-        end: "bottom 20%",
-        toggleActions: "play none none reverse"
-    }
+    // Animate each card
+    gsap.to(card, {
+        opacity: 1,
+        x: 0,
+        duration: 2.0,
+        scrollTrigger: {
+            trigger: card,
+            start: "top 90%",
+            end: "bottom 60%",
+            toggleActions: "play none none reverse"
+        }
+    });
 });
 
 // Pharmacy section animation
@@ -178,14 +188,4 @@ searchPharmacy.addEventListener('click', async () => {
         console.error('Error fetching pharmacy data:', error);
         alert('An error occurred while searching for pharmacies');
     }
-});
-
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
 });
