@@ -14,8 +14,8 @@ const welcomeText = document.querySelectorAll('#welcomeText span');
 gsap.to(welcomeText, {
     y: 0,
     opacity: 1,
-    duration: 2,
-    stagger: 0.5,
+    duration: 2 ,
+    stagger: 0.1,
     ease: "bounce.out"
 });
 
@@ -144,13 +144,16 @@ initMap();
 
 searchPharmacy.addEventListener('click', async () => {
     const pincode = pincodeInput.value.trim();
+    const pharmacyResultsContainer = document.getElementById('pharmacyResults');
+    pharmacyResultsContainer.innerHTML = ''; // Clear previous results
+
     if (pincode.length !== 6 || !/^\d+$/.test(pincode)) {
         alert('Please enter a valid 6-digit PIN code');
         return;
     }
 
     try {
-        // First, get the coordinates for the PIN code
+        // Get the coordinates for the PIN code
         const nominatimResponse = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${pincode}&country=India&format=json`);
         const nominatimData = await nominatimResponse.json();
 
@@ -162,27 +165,42 @@ searchPharmacy.addEventListener('click', async () => {
         const { lat, lon } = nominatimData[0];
         map.setView([lat, lon], 14);
 
-        // Now, search for pharmacies near this location
+        // Search for pharmacies near this location
         const overpassApiUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node(around:5000,${lat},${lon})["amenity"="pharmacy"];out;`;
         const overpassResponse = await fetch(overpassApiUrl);
         const overpassData = await overpassResponse.json();
 
-        // Clear existing markers
+        // Clear existing markers on the map
         map.eachLayer((layer) => {
             if (layer instanceof L.Marker) {
                 map.removeLayer(layer);
             }
         });
 
-        // Add markers for each pharmacy
-        overpassData.elements.forEach(pharmacy => {
-            L.marker([pharmacy.lat, pharmacy.lon])
-                .addTo(map)
-                .bindPopup(pharmacy.tags.name || 'Unnamed Pharmacy');
-        });
-
+        // If no pharmacies found, display a message
         if (overpassData.elements.length === 0) {
             alert('No pharmacies found in this area');
+        } else {
+            // Loop through the pharmacies and create a card for each
+            overpassData.elements.forEach(pharmacy => {
+                const pharmacyName = pharmacy.tags.name || 'Unnamed Pharmacy';
+                const pharmacyAddress = pharmacy.tags['addr:street'] || 'Address not available';
+
+                // Add marker to the map
+                L.marker([pharmacy.lat, pharmacy.lon])
+                    .addTo(map)
+                    .bindPopup(pharmacyName);
+
+                // Create a card for each pharmacy
+                const card = document.createElement('div');
+                card.className = 'pharmacy-card p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md';
+                card.innerHTML = `
+                    <h3 class="text-lg font-semibold mb-2">${pharmacyName}</h3>
+                    <p class="text-sm mb-2">${pharmacyAddress}</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=${pharmacy.lat},${pharmacy.lon}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">View on Map</a>
+                `;
+                pharmacyResultsContainer.appendChild(card);
+            });
         }
     } catch (error) {
         console.error('Error fetching pharmacy data:', error);
