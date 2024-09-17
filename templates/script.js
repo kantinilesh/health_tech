@@ -29,67 +29,95 @@ gsap.from("#home p, #home a", {
     ease: "power3.out"
 });
 
-const chatinput=document.querySelector(".chat-input textarea");
-const sendchatbtn=document.querySelector(".chat-input span");
-const chatbox=document.querySelector(".chatbox");
-const chatbotToggler=document.querySelector(".chatbot-toggler")
-
-
+const chatinput = document.querySelector(".chat-input textarea");
+const sendchatbtn = document.querySelector(".chat-input span");
+const chatbox = document.querySelector(".chatbox");
+const chatbotToggler = document.querySelector(".chatbot-toggler");
 let usermessage;
-const createchatli=(message, classname)=>{
-    const chatli=document.createElement("li");
-    chatli.classList.add("chat",classname);
-    let chatcontent=classname ==="outgoing" ? `<p>${message}</p>` : `<span class="material-symbols-outlined">smart_toy</span><p></p>`;
-    chatli.innerHTML=chatcontent;
-    chatli.querySelector("p").textContent=message;
+
+// Replace with your actual API key
+const API_KEY = 'AIzaSyBYqqnBVjDCO-d4_Wwh7L-1xKWrmyOF6-c';
+
+// Function to create a chat message (either outgoing or incoming)
+const createchatli = (message, classname) => {
+    const chatli = document.createElement("li");
+    chatli.classList.add("chat", classname);
+    let chatcontent = classname === "outgoing"
+        ? `<p>${message}</p>`
+        : `<span class="material-symbols-outlined">smart_toy</span><p></p>`;
+    chatli.innerHTML = chatcontent;
+    chatli.querySelector("p").textContent = message;
     return chatli;
-}
+};
 
-const generateResponse=(incomingChatLi)=>{
-    const au="http://127.0.0.1:5000/query"
-    const messageElement=incomingChatLi.querySelector("p")
-
-    const reop={
-        method: "POST",
-        headers:{
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt: usermessage })
+// Function to call the Gemini API and get the chatbot response
+const generateResponse = async (incomingChatLi) => {
+    const messageElement = incomingChatLi.querySelector("p");
+    
+    if (!API_KEY || API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
+        messageElement.textContent = "Error: API key not set. Please replace 'YOUR_GEMINI_API_KEY_HERE' with your actual Gemini API key.";
+        return;
     }
-    fetch(au,reop).then(res=>res.json()).then(data=>{
-        console.log(data) 
-    }).catch((error)=>{
-        console.log(error);
-        
-    }).finally(()=>chatbox.scrollTo(0,chatbox.scrollHeight));
-}
 
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: usermessage
+                    }]
+                }]
+            })
+        });
 
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`API request failed: ${response.status} ${response.statusText}\n${JSON.stringify(errorData)}`);
+        }
 
+        const data = await response.json();
+        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+            const generatedText = data.candidates[0].content.parts[0].text;
+            messageElement.textContent = generatedText;
+        } else {
+            throw new Error('Unexpected API response structure');
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        messageElement.textContent = `Error: ${error.message}`;
+    } finally {
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+    }
+};
 
-const handlechat=()=>{
-    usermessage=chatinput.value.trim();
-    if(!usermessage) return;
-    chatinput.value="";
+// Function to handle sending a message
+const handlechat = () => {
+    usermessage = chatinput.value.trim();
+    if (!usermessage) return;
+    chatinput.value = ""; // Clear the input field
 
-    chatbox.appendChild(createchatli(usermessage,"outgoing"));
-    chatbox.scrollTo(0,chatbox.scrollHeight);
-    setTimeout(()=>{
-        const incomingChatLi=createchatli("Thinking...","incoming")
+    // Append outgoing chat message
+    chatbox.appendChild(createchatli(usermessage, "outgoing"));
+    chatbox.scrollTo(0, chatbox.scrollHeight);
+
+    // Show a "Thinking..." message for the bot's response
+    setTimeout(() => {
+        const incomingChatLi = createchatli("Thinking...", "incoming");
         chatbox.appendChild(incomingChatLi);
-        chatbox.scrollTo(0,chatbox.scrollHeight);
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+
+        // Call the function to generate a response from the API
         generateResponse(incomingChatLi);
-    },600);
-}
-sendchatbtn.addEventListener("click",handlechat)
-chatbotToggler.addEventListener("click",()=> document.body.classList.toggle("show-chatbot"))
+    }, 600);
+};
 
-
-
-
-
-
-
+// Event listeners for sending messages and toggling the chatbot visibility
+sendchatbtn.addEventListener("click", handlechat);
+chatbotToggler.addEventListener("click", () => document.body.classList.toggle("show-chatbot"));
 
 
 // Disease data
