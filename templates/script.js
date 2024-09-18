@@ -146,7 +146,13 @@ const diseases = [
         name: "Diabetes",
         description: "Understand the causes and management of diabetes.",
         link: "disease.html?disease=diabetes"
+    },
+    {
+        name: "Lung Cancer Detection",
+        description: "Learn about the symptoms and treatment of Lung Cancer.",
+        link: "disease.html?disease=lung-cancer"
     }
+
 ];
 
 // Populate disease cards
