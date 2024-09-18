@@ -133,13 +133,13 @@ const diseases = [
         link: "disease.html?disease=cancer"
     },
     {
-        name: "Jaundice",
-        description: "Discover the symptoms and treatment options for jaundice.",
+        name: "X Ray Fractured",
+        description: "Check whether you have a Fractured bone",
         link: "disease.html?disease=jaundice"
     },
     {
-        name: "Typhoid",
-        description: "Learn about the causes, symptoms, and treatment of typhoid fever.",
+        name: "Chronic Obstructive Pulmonary Disease",
+        description: "Learn about the symptoms and treatment of COPD",
         link: "disease.html?disease=typhoid"
     },
     {
