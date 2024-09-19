@@ -186,18 +186,21 @@
 
         // Prediction functionality (mock)
         const predictBtn = document.getElementById('predictBtn');
-        const result = document.getElementById('result');
+const result = document.getElementById('result');
 
-        predictBtn.addEventListener('click', () => {
-            // Mock prediction logic (in a real app, you would collect data and send it to a server)
-            const mockPrediction = Math.random() > 0.5 ? "Positive" : "Negative";
-            result.innerHTML = `
-                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                    Prediction Result: <span class="font-bold">${mockPrediction}</span>
-                </div>
-            `;
-            result.classList.remove("hidden");
-        });
+predictBtn.addEventListener('click', () => {
+    // Mock prediction logic (Gold stages for COPD)
+    const goldStages = ["Gold 1", "Gold 2", "Gold 3", "Gold 4"];
+    const randomStage = goldStages[Math.floor(Math.random() * goldStages.length)];
+    
+    result.innerHTML = `
+        <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+            Prediction Result: <span class="font-bold">${randomStage}</span>
+        </div>
+    `;
+    result.classList.remove("hidden");
+});
+
     </script>
 </body>
 </html>
