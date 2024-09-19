@@ -127,12 +127,12 @@
                 return;
             }
             // This is a mock prediction. In a real application, you would send the image to a server for processing.
-            const mockPrediction = Math.random() > 0.5 ? "Positive" : "Negative";
+            const mockPrediction = Math.random() > 0.5 ? "Fracture" : "No Fracture";
             result.innerHTML = `
                 <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
                     <p class="mb-2">Prediction:</p>
                     <p class="${mockPrediction === 'Positive' ? 'text-red-500' : 'text-green-500'}">
-                        ${mockPrediction} for Fracture
+                        ${mockPrediction} 
                     </p>
                 </div>
             `;

@@ -240,12 +240,12 @@
 
         predictBtn.addEventListener('click', () => {
             // Mock prediction result
-            const mockPrediction = Math.random() > 0.5 ? "Positive" : "Negative";
+            const mockPrediction = Math.random() > 0.5 ? "Malignant" : "Benign";
             result.innerHTML = `
                 <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
                     <p class="mb-2">Prediction:</p>
-                    <p class="${mockPrediction === 'Positive' ? 'text-red-500' : 'text-green-500'}">
-                        ${mockPrediction} for Brain Tumor
+                    <p class="${mockPrediction === 'Malignant' ? 'text-red-500' : 'text-green-500'}">
+                        ${mockPrediction} Cancer
                     </p>
                 </div>
             `;

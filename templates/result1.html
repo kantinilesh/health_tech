@@ -117,7 +117,7 @@
             }
         });
 
-        // Prediction functionality (mock)
+        // Prediction functionality
         const predictBtn = document.getElementById('predictBtn');
         const result = document.getElementById('result');
 
@@ -126,16 +126,28 @@
                 alert('Please upload an image first.');
                 return;
             }
-            // This is a mock prediction. In a real application, you would send the image to a server for processing.
-            const mockPrediction = Math.random() > 0.5 ? "Positive" : "Negative";
-            result.innerHTML = `
-                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                    <p class="mb-2">Prediction:</p>
-                    <p class="${mockPrediction === 'Positive' ? 'text-red-500' : 'text-green-500'}">
-                        ${mockPrediction} for Brain Tumor
-                    </p>
-                </div>
-            `;
+            // Simulated prediction result. In a real application, you would send the image to a server for processing.
+            const isTumorPositive = Math.random() > 0.5; // Simulating tumor positivity
+            const tumorType = isTumorPositive ? ["Glioma Tumor", "Pituitary Tumor", "Malignant Tumor"] : null;
+
+            if (isTumorPositive) {
+                const randomType = tumorType[Math.floor(Math.random() * tumorType.length)];
+                result.innerHTML = `
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <p class="mb-2">Prediction:</p>
+                        <p class="text-red-500">Positive for Brain Tumor</p>
+                        <p class="text-yellow-500">Type: ${randomType}</p>
+                    </div>
+                `;
+            } else {
+                result.innerHTML = `
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <p class="mb-2">Prediction:</p>
+                        <p class="text-green-500">Negative for Brain Tumor</p>
+                    </div>
+                `;
+            }
+
             result.classList.remove('hidden');
             gsap.from(result, { opacity: 0, y: 20, duration: 0.5 });
         });
